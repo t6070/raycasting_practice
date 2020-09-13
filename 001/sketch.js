@@ -1,5 +1,5 @@
 //壁を定義
-let wall;
+let walls = [];
 //光線を定義
 //位置と方向を持つ
 let ray;
@@ -7,23 +7,30 @@ let ray;
 let particle;
 
 function setup() {
-    createCanvas(400,400);
-    //壁となる境界線を生成
-    wall = new Boundary(300, 100, 300, 300);
+    createCanvas(1000,800);
+    //壁となる境界線を複数生成
+    for (let i = 0; i < 10; i++){
+        let x1 = random(width);
+        let x2 = random(width);
+        let y1 = random(height);
+        let y2 = random(height);
+        walls[i] = new Boundary(x1, x2, y1, y2);
+    }
+
+    walls.push(new Boundary(0, 0, width, 0));
+    walls.push(new Boundary(width, 0, width, height));
+    walls.push(new Boundary(width, height, 0, height));
+    walls.push(new Boundary(0, height, 0, 0));
+
     particle = new Particle();
 }
 
 function draw() {
     background(0);
-    wall.show();
+    for (let wall of walls){
+        wall.show();
+    }
+    particle.update(mouseX, mouseY);
     particle.show();
-    ray.show();
-    ray.lookAt(mouseX, mouseY);
-    //交点のポイントは、光線に対して「交点を取得する」関数を呼び出す(引数：境界線)
-    // let pt = ray.cast(wall);
-    // //交点が存在する場合は、そのポイントを点で描画する
-    // if (pt) {
-    //     fill(255);
-    //     ellipse(pt.x, pt.y, 8, 8);
-    // }
+    particle.look(walls);
 }
